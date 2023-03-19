@@ -24,22 +24,6 @@ Route::get('/', fn()=>response()->json(['status' => true, 'message' => 'Api is u
 
 // users route
 
-Route::group(['prefix' => 'user'], function(){
 
-    Route::group(['prefix' => 'auth'], function () {
-        Route::post('login', [AuthController::class, 'loginuser']);
-        Route::post('register',[RegisterController::class, 'registeruser']);
-        
-        
-        Route::group(['middleware' => 'auth:user'], function() {
-     
-              Route::post('logout', [AuthController::class, 'logoutuser']);
-              Route::post('verification/send',[VerificationController::class, 'sendMailVerificationCode']);
-              Route::post('verification/verify', [VerificationController::class, 'verifyEmail']);
-              Route::post('verification/resend', [Controller::class, 'resendcode']);
-     
-        });
 
-    });
-});
 
