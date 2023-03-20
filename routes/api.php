@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,19 +28,27 @@ Route::get('/', fn()=>response()->json(['status' => true, 'message' => 'Api is u
 Route::group(['prefix' => 'user'], function(){
 
     Route::group(['prefix' => 'auth'], function () {
-        Route::post('login', [AuthController::class, 'loginuser']);
         Route::post('register',[RegisterController::class, 'registeruser']);
-        
-        
-        Route::group(['middleware' => 'auth:user'], function() {
-     
-              Route::post('logout', [AuthController::class, 'logoutuser']);
-              Route::post('verification/send',[VerificationController::class, 'sendMailVerificationCode']);
-              Route::post('verification/verify', [VerificationController::class, 'verifyEmail']);
-              Route::post('verification/resend', [Controller::class, 'resendcode']);
-     
-        });
+    });
+});
 
+
+//admin
+
+Route::group(['prefix' => 'admin'], function(){
+
+    Route::group(['prefix' => 'auth'], function () {
+        Route::post('register',[RegisterController::class, 'registeradmin']);
+    });
+});
+
+//superadmin
+
+
+Route::group(['prefix' => 'superadmin'], function(){
+
+    Route::group(['prefix' => 'auth'], function () {
+        Route::post('register',[RegisterController::class, 'registersuperadmin']);
     });
 });
 
