@@ -28,7 +28,7 @@ class RegisterController extends Controller
 
     public function registeradmin(Request $request, User $user)
     {
-        $renter = $this->register($request, $user, 1);
+        $renter = $this->register($request, $user, 0);
         if (!$renter) {
             return $this->failure([], 'Registration fail', self::SERVER_ERROR);
         } 

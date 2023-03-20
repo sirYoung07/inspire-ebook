@@ -23,15 +23,14 @@ use App\Http\Controllers\Auth\RegisterController;
 
 Route::get('/', fn()=>response()->json(['status' => true, 'message' => 'Api is up and running']));
 
-// users route
+// user
 
 Route::group(['prefix' => 'user'], function(){
 
     Route::group(['prefix' => 'auth'], function () {
-        Route::post('register',[RegisterController::class, 'registeruser']);
+        Route::post('register',[RegisterController::class, 'registeradmin']);
     });
 });
-
 
 //admin
 
