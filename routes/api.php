@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Password\PasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +24,7 @@ use App\Http\Controllers\Auth\RegisterController;
 
 Route::get('/', fn()=>response()->json(['status' => true, 'message' => 'Api is up and running']));
 
-// user
+// user routes
 
 Route::group(['prefix' => 'user'], function(){
 
@@ -32,7 +33,7 @@ Route::group(['prefix' => 'user'], function(){
     });
 });
 
-//admin
+//admin routes
 
 Route::group(['prefix' => 'admin'], function(){
 
@@ -41,7 +42,7 @@ Route::group(['prefix' => 'admin'], function(){
     });
 });
 
-//superadmin
+//superadmin routes
 
 
 Route::group(['prefix' => 'superadmin'], function(){
@@ -49,6 +50,18 @@ Route::group(['prefix' => 'superadmin'], function(){
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register',[RegisterController::class, 'registersuperadmin']);
     });
+});
+
+
+
+//password reset routes
+
+Route::group(['prefix'=> 'password', 'middleware' => 'guest:sanctum'], function() {
+
+    Route::post('sendtoken', [PasswordController::class, 'sendcode']);
+    Route::post('resendtoken', [PasswordController::class, 'sendcode']);
+    Route::put('reset', [PasswordController::class, 'reset']);
+
 });
 
 

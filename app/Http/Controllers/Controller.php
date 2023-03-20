@@ -42,4 +42,9 @@ class Controller extends BaseController
         ], $statuscode);
     }
 
+    public function generatecode(){
+        $token = mt_rand(000000, 999999);
+        return $token;
+    }
+
 }
