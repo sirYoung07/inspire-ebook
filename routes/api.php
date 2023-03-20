@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,8 +23,32 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn()=>response()->json(['status' => true, 'message' => 'Api is up and running']));
 
-// users route
+// user
+
+Route::group(['prefix' => 'user'], function(){
+
+    Route::group(['prefix' => 'auth'], function () {
+        Route::post('register',[RegisterController::class, 'registeradmin']);
+    });
+});
+
+//admin
+
+Route::group(['prefix' => 'admin'], function(){
+
+    Route::group(['prefix' => 'auth'], function () {
+        Route::post('register',[RegisterController::class, 'registeradmin']);
+    });
+});
+
+//superadmin
 
 
+Route::group(['prefix' => 'superadmin'], function(){
+
+    Route::group(['prefix' => 'auth'], function () {
+        Route::post('register',[RegisterController::class, 'registersuperadmin']);
+    });
+});
 
 
