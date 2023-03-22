@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
@@ -20,7 +21,7 @@ use App\Http\Controllers\Password\PasswordController;
 //     return $request->user();
 // });
 
-// welcome Route
+// to do , using guard to authenticate
 
 Route::get('/', fn()=>response()->json(['status' => true, 'message' => 'Api is up and running']));
 
@@ -30,6 +31,7 @@ Route::group(['prefix' => 'user'], function(){
 
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register',[RegisterController::class, 'registeradmin']);
+        Route::post('login',[AuthController::class, 'loginuser']);
     });
 });
 

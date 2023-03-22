@@ -17,6 +17,10 @@ return [
         'guard' => 'web',
         'passwords' => 'users',
     ],
+    'user' => [
+        'driver' => 'eloquent',
+        'model' => \App\Models\User::class
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -36,10 +40,23 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
+        //  'api' => [
+        //     'driver' => 'session',
+        //     'provider' => 'users',
+        // ],
+        'user' =>[
+            'driver' => 'sanctum',
+            'provider' => 'users'
         ],
+
+        'admin' =>[
+            'driver' => 'sanctum',
+            'provider' => 'admins',
+        ],
+        'superadmin' => [
+            'driver' => 'sanctum',
+            'provider' => 'superadmins'
+        ]
     ],
 
     /*
@@ -63,12 +80,24 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+            'table' => 'users',
+            'where' => ['role' => 0],
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+            'table' => 'users',
+            'where' => ['role' => 1]
+        ],
+        
+        'superadmins' => [
+            'driver' => 'eloquent',
+            'model' => \App\Models\Superadmin::class,
+            'table' => 'users',
+            'where' => ['role' => 2]
+        ]
+
     ],
 
     /*
