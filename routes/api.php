@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Password\PasswordController;
+use App\Http\Controllers\Verification\EmailVerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,11 @@ Route::group(['prefix' => 'user'], function(){
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register',[RegisterController::class, 'registeradmin']);
         Route::post('login',[AuthController::class, 'loginuser']);
+    });
+
+    Route::group(['prefix' => 'verification'], function(){
+        Route::post('sendcode',[EmailVerificationController::class, 'sendcode']);
+        Route::post('verify',[EmailVerificationController::class, 'verify']);
     });
 });
 
@@ -65,5 +71,9 @@ Route::group(['prefix'=> 'password', 'middleware' => 'guest:sanctum'], function(
     Route::put('reset', [PasswordController::class, 'reset']);
 
 });
+
+
+
+
 
 
