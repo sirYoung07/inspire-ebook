@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,8 +32,10 @@ Route::get('/', fn()=>response()->json(['status' => true, 'message' => 'Api is u
 Route::group(['prefix' => 'user'], function(){
 
     Route::group(['prefix' => 'auth'], function () {
-        Route::post('register',[RegisterController::class, 'registeradmin']);
+        Route::post('register',[RegisterController::class, 'registeruser']);
         Route::post('login',[AuthController::class, 'loginuser']);
+        // for practiser
+        Route::post('login',[AuthController::class, 'authenticate']);
     });
 
     Route::group(['prefix' => 'verification'], function(){
@@ -47,7 +50,16 @@ Route::group(['prefix' => 'admin'], function(){
 
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register',[RegisterController::class, 'registeradmin']);
+        Route::post('login',[AuthController::class, 'loginadmin']);
     });
+
+    Route::group(['prefix' => 'bookmangement', 'middleware' => 'auth:sanctum'], function(){
+        Route::post('create', [AdminController::class, 'createbook']);
+        Route::get('view', [AdminController::class, 'viewbook']);
+        Route::get('view/{id}', [AdminController::class, 'show']);
+        Route::put('update', [AdminController::class, 'update']);
+    });
+
 });
 
 //superadmin routes
@@ -57,6 +69,7 @@ Route::group(['prefix' => 'superadmin'], function(){
 
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register',[RegisterController::class, 'registersuperadmin']);
+        Route::post('login',[AuthController::class, 'loginsuperadmin']);
     });
 });
 

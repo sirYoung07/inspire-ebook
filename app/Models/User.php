@@ -48,4 +48,8 @@ class User extends Authenticatable
     public function codes() : MorphMany{
         return $this->morphMany(Code::class, 'codeable');
     }
+
+    public function books(): MorphMany{
+        return $this->morphMany(Book::class, 'bookable');
+    }
 }

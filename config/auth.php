@@ -17,7 +17,7 @@ return [
         'guard' => 'web',
         'passwords' => 'users',
     ],
-    'user' => [
+    'users' => [
         'driver' => 'eloquent',
         'model' => \App\Models\User::class
     ],
@@ -44,17 +44,17 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'user' =>[
-            'driver' => 'sanctum',
+        'api' =>[
+            'driver' => 'session',
             'provider' => 'users'
         ],
 
         'admin' =>[
-            'driver' => 'sanctum',
+            'driver' => 'session',
             'provider' => 'admins',
         ],
         'superadmin' => [
-            'driver' => 'sanctum',
+            'driver' => 'session',
             'provider' => 'superadmins'
         ]
     ],
@@ -86,14 +86,14 @@ return [
 
         'admins' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Admin::class,
+            'model' => App\Models\User::class,
             'table' => 'users',
             'where' => ['role' => 1]
         ],
         
         'superadmins' => [
             'driver' => 'eloquent',
-            'model' => \App\Models\Superadmin::class,
+            'model' => \App\Models\User::class,
             'table' => 'users',
             'where' => ['role' => 2]
         ]
