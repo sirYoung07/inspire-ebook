@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Password\PasswordController;
+use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Verification\EmailVerificationController;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +40,10 @@ Route::group(['prefix' => 'user'], function(){
         Route::post('login',[AuthController::class, 'authenticate']);
     });
 
+    Route::group(['middleware' => 'auth:sanctum'], function(){
+        Route::get('/authenticated', [UserController::class, 'getauth']);
+    });
+
     Route::group(['prefix' => 'verification'], function(){
         Route::post('sendcode',[EmailVerificationController::class, 'sendcode']);
         Route::post('verify',[EmailVerificationController::class, 'verify']);
@@ -56,7 +62,7 @@ Route::group(['prefix' => 'admin'], function(){
     Route::group(['prefix' => 'bookmangement', 'middleware' => 'auth:sanctum'], function(){
         Route::post('create', [AdminController::class, 'createbook']);
         Route::get('view', [AdminController::class, 'viewbook']);
-        Route::get('view/{id}', [AdminController::class, 'show']);
+        Route::get('view/{book}', [AdminController::class, 'show_single']);
         Route::put('update', [AdminController::class, 'update']);
     });
 
