@@ -62,8 +62,11 @@ Route::group(['prefix' => 'admin'], function(){
     Route::group(['prefix' => 'bookmangement', 'middleware' => 'auth:sanctum'], function(){
         Route::post('create', [AdminController::class, 'createbook']);
         Route::get('view', [AdminController::class, 'viewbook']);
-        Route::get('view/{book}', [AdminController::class, 'show_single']);
-        Route::put('update', [AdminController::class, 'update']);
+        Route::get('view/{book}', [AdminController::class, 'single_book']);
+        Route::post('update/{id}', [AdminController::class, 'update']); // to do
+        Route::post('ban/{id}', [AdminController::class, 'ban']); //ban
+        Route::post('restore/{id}', [AdminController::class, 'restore']); //unban
+        Route::post('delete/{id}', [AdminController::class, 'delete']); 
     });
 
 });
