@@ -1,9 +1,15 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Password\PasswordController;
+use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Verification\EmailVerificationController;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +26,7 @@ use App\Http\Controllers\Password\PasswordController;
 //     return $request->user();
 // });
 
-// welcome Route
+// to do , using guard to authenticate
 
 Route::get('/', fn()=>response()->json(['status' => true, 'message' => 'Api is up and running']));
 
@@ -29,7 +35,19 @@ Route::get('/', fn()=>response()->json(['status' => true, 'message' => 'Api is u
 Route::group(['prefix' => 'user'], function(){
 
     Route::group(['prefix' => 'auth'], function () {
-        Route::post('register',[RegisterController::class, 'registeradmin']);
+        Route::post('register',[RegisterController::class, 'registeruser']);
+        Route::post('login',[AuthController::class, 'loginuser']);
+        // for practiser
+        Route::post('login',[AuthController::class, 'authenticate']);
+    });
+
+    Route::group(['middleware' => 'auth:sanctum'], function(){
+        Route::get('/authenticated', [UserController::class, 'getauth']);
+    });
+
+    Route::group(['prefix' => 'verification'], function(){
+        Route::post('sendcode',[EmailVerificationController::class, 'sendcode']);
+        Route::post('verify',[EmailVerificationController::class, 'verify']);
     });
 });
 
@@ -39,7 +57,19 @@ Route::group(['prefix' => 'admin'], function(){
 
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register',[RegisterController::class, 'registeradmin']);
+        Route::post('login',[AuthController::class, 'loginadmin']);
     });
+
+    Route::group(['prefix' => 'bookmangement', 'middleware' => 'auth:sanctum'], function(){
+        Route::post('create', [AdminController::class, 'createbook']);
+        Route::get('view', [AdminController::class, 'viewbook']);
+        Route::get('view/{book}', [AdminController::class, 'single_book']);
+        Route::post('update/{id}', [AdminController::class, 'update']); // to do
+        Route::post('ban/{id}', [AdminController::class, 'ban']); //ban
+        Route::post('restore/{id}', [AdminController::class, 'restore']); //unban
+        Route::post('delete/{id}', [AdminController::class, 'delete']); 
+    });
+
 });
 
 //superadmin routes
@@ -49,6 +79,7 @@ Route::group(['prefix' => 'superadmin'], function(){
 
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register',[RegisterController::class, 'registersuperadmin']);
+        Route::post('login',[AuthController::class, 'loginsuperadmin']);
     });
 });
 
@@ -63,5 +94,20 @@ Route::group(['prefix'=> 'password', 'middleware' => 'guest:sanctum'], function(
     Route::put('reset', [PasswordController::class, 'reset']);
 
 });
+
+//payment integration
+
+// Route::group(['prefix' => 'payment', 'middleware' => 'auth:sanctum'], function (){
+//     Route::post('', [PaymentController::class, 'makepayment']);
+
+// });
+
+Route::get('/initiate-payment', [PaymentController::class, 'initiatepayment']);
+
+Route::get('/payment/callback', [PaymentController::class, 'handlePaymentCallback']);
+
+
+
+
 
 
