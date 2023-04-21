@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Password\PasswordController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Verification\EmailVerificationController;
@@ -93,6 +94,17 @@ Route::group(['prefix'=> 'password', 'middleware' => 'guest:sanctum'], function(
     Route::put('reset', [PasswordController::class, 'reset']);
 
 });
+
+//payment integration
+
+// Route::group(['prefix' => 'payment', 'middleware' => 'auth:sanctum'], function (){
+//     Route::post('', [PaymentController::class, 'makepayment']);
+
+// });
+
+Route::get('/initiate-payment', [PaymentController::class, 'initiatepayment']);
+
+Route::get('/payment/callback', [PaymentController::class, 'handlePaymentCallback']);
 
 
 

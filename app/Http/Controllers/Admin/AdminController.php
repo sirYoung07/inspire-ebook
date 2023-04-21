@@ -114,6 +114,7 @@ class AdminController extends Controller
 
         if(!$book){
             return $this->failure(['message' => 'record not found']);
+            
         }
 
         $single_book = $this->getauth()->books()->find($id);
