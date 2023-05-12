@@ -95,16 +95,21 @@ Route::group(['prefix'=> 'password', 'middleware' => 'guest:sanctum'], function(
 
 });
 
-//payment integration
+//payment 
 
-// Route::group(['prefix' => 'payment', 'middleware' => 'auth:sanctum'], function (){
-//     Route::post('', [PaymentController::class, 'makepayment']);
+Route::group(['prefix' => 'payment'], function(){
 
-// });
+    Route::group(['middleware' => 'auth:sanctum'], function(){
+    
+        Route::post('/initiate_payment', [PaymentController::class, 'make_payment']);
+        
+    });
+    Route::get('/pay/callback', [PaymentController::class, 'payment_callback'])->name('pay.callback');
+    
+    
 
-Route::get('/initiate-payment', [PaymentController::class, 'initiatepayment']);
+});    
 
-Route::get('/payment/callback', [PaymentController::class, 'handlePaymentCallback']);
 
 
 
