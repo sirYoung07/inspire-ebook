@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     // login
+    // not yet fixed with different guards 
     
     public function loginuser(Request $request){
         $user = $this->login($request, 'api');
@@ -69,9 +70,9 @@ class AuthController extends Controller
            ]); 
     
         if(Auth::attempt($formFields)){
-            // $user = Auth::guard('api')->user();
-            // return $user;
-            return 'yes';
+            $user = Auth::guard()->user();
+            return $user;
+          //  return 'yes';
         }
         
 

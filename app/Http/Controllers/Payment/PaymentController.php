@@ -14,10 +14,14 @@ use Illuminate\Support\Facades\Redirect;
 use PHPUnit\Util\ThrowableToStringMapper;
 
 class PaymentController extends Controller
+
 {
     use userTrait;
 
+    //Topping users wallet via paystack
+
     public function make_payment(Request $request){
+
 
         $input = $request->validate([
             'amount' => 'required',

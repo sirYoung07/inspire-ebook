@@ -22,15 +22,13 @@ use App\Models\User;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+
 
 // to do , using guard to authenticate
 
 Route::get('/', fn()=>response()->json(['status' => true, 'message' => 'Api is up and running']));
 
-// user routes
+// user (readers routes )
 
 Route::group(['prefix' => 'user'], function(){
 
@@ -42,14 +40,23 @@ Route::group(['prefix' => 'user'], function(){
     });
 
     Route::group(['middleware' => 'auth:sanctum'], function(){
+        
         Route::get('/authenticated', [UserController::class, 'getauth']);
+        Route::put('/manageprofile', [UserController::class, 'manage_profile']);
+        Route::get('/available_books', [UserController::class, 'available_books']);
+        Route::get('/rent_book', [UserController::class, 'rent_book']);
     });
+
 
     Route::group(['prefix' => 'verification'], function(){
         Route::post('sendcode',[EmailVerificationController::class, 'sendcode']);
         Route::post('verify',[EmailVerificationController::class, 'verify']);
     });
+
+
 });
+
+
 
 //admin routes
 
@@ -60,14 +67,16 @@ Route::group(['prefix' => 'admin'], function(){
         Route::post('login',[AuthController::class, 'loginadmin']);
     });
 
+
     Route::group(['prefix' => 'bookmangement', 'middleware' => 'auth:sanctum'], function(){
         Route::post('create', [AdminController::class, 'createbook']);
         Route::get('view', [AdminController::class, 'viewbook']);
         Route::get('view/{book}', [AdminController::class, 'single_book']);
-        Route::post('update/{id}', [AdminController::class, 'update']); // to do
-        Route::post('ban/{id}', [AdminController::class, 'ban']); //ban
+        Route::post('update/{id}', [AdminController::class, 'update']); 
+        Route::post('ban/{id}'      , [AdminController::class, 'ban']); //ban
         Route::post('restore/{id}', [AdminController::class, 'restore']); //unban
         Route::post('delete/{id}', [AdminController::class, 'delete']); 
+        Route::post('change_book_status/{id}', [AdminController::class, 'change_book_status']);
     });
 
 });
@@ -105,8 +114,7 @@ Route::group(['prefix' => 'payment'], function(){
         
     });
     Route::get('/pay/callback', [PaymentController::class, 'payment_callback'])->name('pay.callback');
-    
-    
+
 
 });    
 
