@@ -44,32 +44,65 @@ class UserController extends Controller
     {
         return Book::where('available', true)->get();
     }
+    
+
 
 
     public function rent_book(Request $request, $id)
     {
         $inputs = $request->validate([ 'duration' => 'required|integer ']);
+
+        $check_rent_payment =  $this->make_rent_payment($inputs['duration'], $id);
+
+        if($check_rent_payment === 1){
+            return $this->success([], 
+                 'Book rented successfully, your rentage expires in'. ' ' . $inputs['duration'] . ' ' .  'day(s)');
+
+        }
+
+        return $check_rent_payment;
+
+        
+    }
+
+
+    
+
+
+    public function extend_rent_duration(Request $request, $id){
+        $inputs = $request->validate([ 'duration' => 'required|integer']);
         $book = Book::find($id);
+
         if(!$book){
+           
             return $this->failure(['message' => 'record not found']);
         }
 
-        if($book->available == false){
-            return $this->failure(['message' => 'sorry, this book is not available for rentage']);
-
+        $user = $this->getauth();
+        $rented_book = RentedBooks::where('rentable_id', $user->id)->where('book_id', $id)->first();
+        if(!$rented_book){
+            return $this->failure([], 'Unauhtorized', self::UNAUTHORIZED);
         }
         
-        $user = $this->getauth();
+        if($rented_book->is_available == false){
+            return $this->failure(['info' => 'you need to rent this book again'
+        ], 'Your rentage is expired already', self::ACCESS_DENIED);
+
+        }
+
+        
         $wallet_balance = $user->wallet_balance;
 
         $book_price = $book->price;
         $total_cost = $book_price * $inputs['duration'];
-
+        
+       
         if($wallet_balance < $total_cost){
+
             return $this->failure([
                 'wallet_balance' => $wallet_balance,
                 'rentage_cost' => $total_cost,
-                'amount needed more for rentage' => $total_cost - $wallet_balance
+                'amount needed more for rentage extension' => $total_cost - $wallet_balance
                 ], 
 
                 'Insufficient balance');
@@ -80,27 +113,17 @@ class UserController extends Controller
         $new_user->wallet_balance = $new_wallet_balance;
         $new_user->save();
 
-        $rentedbook = new RentedBooks();
-        $rentedbook->book()->associate($book);
-        $rentedbook->rentable()->associate($user);
-        $rentedbook->start_rent_date = now();
-        $rentedbook->end_rent_date = now()->addDays($inputs['duration']);
-        $rentedbook->total_cost = $total_cost;
-        $rentedbook->save();
+        $rented_book->end_rent_date = now()->addDays($inputs['duration']);
+        $rented_book->save();
 
-        $book->available = false;
-        $book->save();
+        return $this->success(['information' => 'you have additional' . ' '. $inputs['duration'] . ' day(s) to read this book '
+    ], 'Boonk rents dated extended successfully');
+
+
         
-
-        return $this->success([
-            'rentage_cost' => $total_cost . ' naira',
-            'inital balance' => $wallet_balance . ' naira',
-            'new wallet balance' => $new_wallet_balance . ' naira'
-        ], 
-             'Book rented successfully, your rentage expires in'. ' ' . $inputs['duration'] . ' ' .  'day(s)');
-
-
+        
     }
+    
 
 
     public function get_rented_books(User $user, Book $book){
@@ -135,5 +158,63 @@ class UserController extends Controller
         
     }
 
+
+
+   
+
+
+
+    protected function make_rent_payment(int $num_of_days, $id) : int|object{
+        $book = Book::find($id);
+
+        if(!$book){
+           
+            return $this->failure(['message' => 'record not found']);
+        }
+
+        if($book->available == false){
+            return $this->failure([], 'this book is not available for rentage');
+        }
+
+        
+        $user = $this->getauth();
+        $wallet_balance = $user->wallet_balance;
+
+        $book_price = $book->price;
+        $total_cost = $book_price * $num_of_days;
+        
+       
+        if($wallet_balance < $total_cost){
+
+            return $this->failure([
+                'wallet_balance' => $wallet_balance,
+                'rentage_cost' => $total_cost,
+                'amount needed more for rentage' => $total_cost - $wallet_balance
+                ], 
+
+                'Insufficient balance');
+        }
+
+        $new_user = User::where('id', $user->id)->first();
+        $new_wallet_balance = $wallet_balance - $total_cost;
+        $new_user->wallet_balance = $new_wallet_balance;
+        $new_user->save();
+
+        $rentedbook = new RentedBooks();
+        $rentedbook->books()->associate($book);
+        $rentedbook->rentable()->associate($user);
+        $rentedbook->start_rent_date = now();
+        $rentedbook->end_rent_date = now()->addDays($num_of_days);
+        $rentedbook->total_cost = $total_cost;
+        $rentedbook->save();
+
+        $book->available = false;
+        $book->save();
+        
+
+       return 1;
+       
+
+    }
 
 }

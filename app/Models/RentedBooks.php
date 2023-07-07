@@ -12,14 +12,14 @@ use PHPUnit\Framework\Attributes\IgnoreFunctionForCodeCoverage;
 class RentedBooks extends Model
 {
     use HasFactory;
-   // use SoftDeletes;
+    public $timestamps = false;
 
     public function rentable(): MorphTo{
         return $this->morphTo();
     }
     
-    public function books(): MorphMany{
-        return $this->morphMany(Book::class, 'bookable');
+    public function books() {
+        return $this->belongsTo(Book::class, 'book_id');
     }
 
 

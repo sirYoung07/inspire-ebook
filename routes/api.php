@@ -43,9 +43,11 @@ Route::group(['prefix' => 'user'], function(){
         
         Route::get('/authenticated', [UserController::class, 'getauth']);
         Route::put('/manageprofile', [UserController::class, 'manage_profile']);
+        Route::post('/rent_book/{id}', [UserController::class, 'rent_book']);
         Route::get('/available_books', [UserController::class, 'available_books']);
         Route::get('/rented_books', [UserController::class, 'get_rented_books']);
         Route::get('/rented_book/{id}', [UserController::class, 'get_rented_book_detail']);
+        Route::post('/extend_book_rent/{id}', [UserController::class, 'extend_rent_duration']);
     });
 
 

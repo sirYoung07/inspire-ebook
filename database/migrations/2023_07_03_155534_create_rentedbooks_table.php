@@ -16,9 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('book_id');
             $table->morphs('rentable');
             $table->decimal('total_cost', 10,2);
+            $table->boolean('is_available')->default(true);
             $table->timestamp('start_rent_date')->nullable();
             $table->timestamp('end_rent_date')->nullable();
-            $table->timestamps();
         });
     }
 
