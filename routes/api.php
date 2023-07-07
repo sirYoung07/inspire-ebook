@@ -44,7 +44,8 @@ Route::group(['prefix' => 'user'], function(){
         Route::get('/authenticated', [UserController::class, 'getauth']);
         Route::put('/manageprofile', [UserController::class, 'manage_profile']);
         Route::get('/available_books', [UserController::class, 'available_books']);
-        Route::get('/rent_book', [UserController::class, 'rent_book']);
+        Route::get('/rented_books', [UserController::class, 'get_rented_books']);
+        Route::get('/rented_book/{id}', [UserController::class, 'get_rented_book_detail']);
     });
 
 
@@ -71,7 +72,7 @@ Route::group(['prefix' => 'admin'], function(){
     Route::group(['prefix' => 'bookmangement', 'middleware' => 'auth:sanctum'], function(){
         Route::post('create', [AdminController::class, 'createbook']);
         Route::get('view', [AdminController::class, 'viewbook']);
-        Route::get('view/{book}', [AdminController::class, 'single_book']);
+        Route::get('view/{id}', [AdminController::class, 'single_book']);
         Route::post('update/{id}', [AdminController::class, 'update']); 
         Route::post('ban/{id}'      , [AdminController::class, 'ban']); //ban
         Route::post('restore/{id}', [AdminController::class, 'restore']); //unban
@@ -117,6 +118,7 @@ Route::group(['prefix' => 'payment'], function(){
 
 
 });    
+
 
 
 
