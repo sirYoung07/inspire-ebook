@@ -2,21 +2,27 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\User\UserController;
+use Throwable;
 use App\Models\Book;
+use App\Models\User;
 use App\Traits\userTrait;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use PhpParser\Node\Stmt\TryCatch;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 
+use Illuminate\Support\Facades\Auth;
 use function PHPUnit\Framework\returnSelf;
+use App\Http\Controllers\User\UserController;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AdminController extends Controller
 {
     use userTrait;
 
     public function createbook(Request $request, Book $book){
+
         $request->validate([
             'author_name' => ['required', 'string', 'min:5'],
             'description' => ['required', 'string', 'min:10'],
@@ -44,6 +50,9 @@ class AdminController extends Controller
 
     }
 
+
+
+
     public function viewbook(){
         $all_books = $this->getauth()->books()->get();
         if(!$all_books){
@@ -51,14 +60,18 @@ class AdminController extends Controller
         }
         return $all_books;
     }
+    
+
+
 
     public function single_book($id) {
+
         $book = Book::find($id);
 
         if(!$book){
             return $this->failure(['message' => 'record not found']);
         }
-
+        
         $single_book = $this->getauth()->books()->find($id);
         
         if(!$single_book){
@@ -66,7 +79,10 @@ class AdminController extends Controller
         }
 
         return $single_book;
+
+        
     }
+
 
     public function update($id, Request $request, Book $book){
         
@@ -99,14 +115,27 @@ class AdminController extends Controller
         if(!$valid_book){
             return $this->failure(['message' => 'this particular book is not created by you'], 'You do not have access to this book', 401);
         }
+
         $update = $valid_book->update($credentials);
+
         if (!$update){
-            return 'error';
+            return $this->failure();
         }
 
         
         return $this->success([], 'book has been updated');
+
+        /// WHY NOT ???
+        
+        // $single_book = $this->single_book($id);
+        // if(!$single_book){
+        //     return $this->failure();
+        // }
+        // $update = $single_book->update($credentials);
     }
+
+
+
 
     public function ban($id){
 
@@ -118,6 +147,8 @@ class AdminController extends Controller
         }
 
         $single_book = $this->getauth()->books()->find($id);
+
+       // $single_book = $this->single_book($id);      WHY NOT ?? it's returning a bad method call.
         
         if(!$single_book){
             return $this->failure(['message' => 'this particular book is not created by you'], 'You do not have access to this book', 401);
@@ -125,6 +156,8 @@ class AdminController extends Controller
         $single_book->delete();
         return $this->success(['message' => 'book has been banned suessfully']);
     }
+
+
 
     public function restore($id){
         $book = Book::withTrashed($id);
@@ -136,6 +169,8 @@ class AdminController extends Controller
         return $this->success(['info' => 'you can now access this book'],
             'Book Unbanned succesfully');
     }
+
+
 
     public function delete($id){
 
@@ -151,12 +186,28 @@ class AdminController extends Controller
             return $this->failure(['message' => 'this particular book is not created by you'], 'You do not have access to this book', 401);
         }
 
-       $single_book->forceDelete();
-       return $this->success(['info' => 'book deleted successfully']);
+       // $single_book = $this->single_book($id); // why returning bad method call ?
+
+        $single_book->forceDelete();
+        return $this->success(['info' => 'book deleted successfully']);
 
     }
 
+
+
+    public function change_book_status($id){
+
+        $book = $this->single_book($id);
+        $book->available = !$book->available;
+        $book->save();
+        return $this->success([
+            'book details' => $book
+        ], 
+            'Book availablility for rentage switched successfully');
+    }
+
     
+
 
     
 

@@ -20,7 +20,7 @@ class PasswordController extends Controller
         $email = User::where('email', $request->input('email'))->value('email');
         if(!$email){
 
-            return $this->failure(
+            return $this->failure(  
                 ['error'=> 'the provided email does not exist'], '', self::BAD_REQUEST);
         }
         

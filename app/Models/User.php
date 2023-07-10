@@ -4,10 +4,14 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use PhpParser\Node\Expr\FuncCall;
 
 class User extends Authenticatable
 {
@@ -52,4 +56,9 @@ class User extends Authenticatable
     public function books(): MorphMany{
         return $this->morphMany(Book::class, 'bookable');
     }
+    
+    public function rentedBooks(){
+        return $this->belongsToMany(Book::class, 'rented_books', 'rentable_id', 'book_id');
+    }
+
 }

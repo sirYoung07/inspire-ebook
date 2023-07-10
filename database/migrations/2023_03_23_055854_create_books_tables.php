@@ -21,7 +21,7 @@ return new class extends Migration
             $table->boolean('available')->default(false);
             $table->timestamps();
         });
-    }
+    }   
 
     /**
      * Reverse the migrations.
