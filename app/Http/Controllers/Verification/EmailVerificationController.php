@@ -17,8 +17,7 @@ class EmailVerificationController extends Controller
             'email' => ['required', 'email']
         ]);
 
-        $data = Code::where('token', $request->token)
-                             ->where('email', $request->email)->first();
+        $data = Code::where('token', $request->token)->where('email', $request->email)->first();
 
         if(!$data){
             return $this->failure(['error' => 'the submitted is token invalid'], '', self::VALIDATION_ERROR);

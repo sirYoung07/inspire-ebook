@@ -36,11 +36,11 @@ Route::group(['prefix' => 'user'], function(){
         Route::post('register',[RegisterController::class, 'registeruser']);
         Route::post('login',[AuthController::class, 'loginuser']);
 
-        // for practiser
+        // for practice
         Route::post('login',[AuthController::class, 'authenticate']);
     });
 
-    Route::group(['middleware' => 'auth:sanctum'], function(){
+    Route::group(['middleware' => ['auth:sanctum', 'verified']], function(){
         
         Route::get('/authenticated', [UserController::class, 'getauth']);
         Route::put('/manageprofile', [UserController::class, 'manage_profile']);
@@ -62,7 +62,7 @@ Route::group(['prefix' => 'user'], function(){
 
 
 
-//admin routes
+    //admin routes
 
 Route::group(['prefix' => 'admin'], function(){
     
@@ -72,7 +72,7 @@ Route::group(['prefix' => 'admin'], function(){
     });
     
     
-    Route::group(['prefix' => 'bookmangement', 'middleware' => 'auth:sanctum' ], function(){
+    Route::group(['prefix' => 'bookmangement','middleware' => ['auth:sanctum', 'verified']], function(){
         Route::post('create', [AdminController::class, 'createbook']);
         Route::get('view', [AdminController::class, 'viewbook']);
         Route::get('view/{id}', [AdminController::class, 'single_book']);
