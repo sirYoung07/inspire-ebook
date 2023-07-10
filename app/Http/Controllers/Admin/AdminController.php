@@ -8,10 +8,11 @@ use App\Models\User;
 use App\Traits\userTrait;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\TryCatch;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Auth;
 use function PHPUnit\Framework\returnSelf;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -21,6 +22,7 @@ class AdminController extends Controller
     use userTrait;
 
     public function createbook(Request $request, Book $book){
+
         $request->validate([
             'author_name' => ['required', 'string', 'min:5'],
             'description' => ['required', 'string', 'min:10'],
@@ -202,7 +204,6 @@ class AdminController extends Controller
             'book details' => $book
         ], 
             'Book availablility for rentage switched successfully');
-
     }
 
     

@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\User;
 use Carbon\Carbon;
+use App\Models\Book;
 use App\Models\User;
 use App\Traits\userTrait;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Models\Book;
 use App\Models\RentedBooks;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Psy\CodeCleaner\ReturnTypePass;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Translation\Dumper\DumperInterface;
 
 class UserController extends Controller
@@ -70,6 +71,7 @@ class UserController extends Controller
 
 
     public function extend_rent_duration(Request $request, $id){
+        
         $inputs = $request->validate([ 'duration' => 'required|integer']);
         $book = Book::find($id);
 
@@ -214,6 +216,28 @@ class UserController extends Controller
 
        return 1;
        
+
+    }
+
+    public function cron_job(){
+         // to change availability for rent extension in rented_books table
+         $expiredRecords = RentedBooks::
+         where('end_rent_date', '<', now())
+         ->get();
+         
+     RentedBooks::whereIn('id', $expiredRecords->pluck('id'))
+                                     ->update(['is_available' => false]);  
+
+     
+    
+     // to change availablity for renting book in books table
+     $rentedBooks_id = RentedBooks::where('end_rent_date', '<', now())
+                                 ->pluck('book_id')
+                                 ->toArray();
+
+    Book::whereIn('id', $rentedBooks_id)->update(['available' => true]);
+
+
 
     }
 

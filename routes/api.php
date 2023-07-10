@@ -35,6 +35,7 @@ Route::group(['prefix' => 'user'], function(){
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register',[RegisterController::class, 'registeruser']);
         Route::post('login',[AuthController::class, 'loginuser']);
+
         // for practiser
         Route::post('login',[AuthController::class, 'authenticate']);
     });
@@ -56,7 +57,7 @@ Route::group(['prefix' => 'user'], function(){
         Route::post('verify',[EmailVerificationController::class, 'verify']);
     });
 
-
+    
 });
 
 
@@ -64,14 +65,14 @@ Route::group(['prefix' => 'user'], function(){
 //admin routes
 
 Route::group(['prefix' => 'admin'], function(){
-
+    
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register',[RegisterController::class, 'registeradmin']);
         Route::post('login',[AuthController::class, 'loginadmin']);
     });
-
-
-    Route::group(['prefix' => 'bookmangement', 'middleware' => 'auth:sanctum'], function(){
+    
+    
+    Route::group(['prefix' => 'bookmangement', 'middleware' => 'auth:sanctum' ], function(){
         Route::post('create', [AdminController::class, 'createbook']);
         Route::get('view', [AdminController::class, 'viewbook']);
         Route::get('view/{id}', [AdminController::class, 'single_book']);
@@ -81,14 +82,14 @@ Route::group(['prefix' => 'admin'], function(){
         Route::post('delete/{id}', [AdminController::class, 'delete']); 
         Route::post('change_book_status/{id}', [AdminController::class, 'change_book_status']);
     });
-
+    
 });
 
 //superadmin routes
 
 
 Route::group(['prefix' => 'superadmin'], function(){
-
+    
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register',[RegisterController::class, 'registersuperadmin']);
         Route::post('login',[AuthController::class, 'loginsuperadmin']);
@@ -100,7 +101,6 @@ Route::group(['prefix' => 'superadmin'], function(){
 //password reset routes
 
 Route::group(['prefix'=> 'password', 'middleware' => 'guest:sanctum'], function() {
-
     Route::post('sendtoken', [PasswordController::class, 'sendcode']);
     Route::post('resendtoken', [PasswordController::class, 'sendcode']);
     Route::put('reset', [PasswordController::class, 'reset']);
@@ -120,6 +120,7 @@ Route::group(['prefix' => 'payment'], function(){
 
 
 });    
+
 
 
 

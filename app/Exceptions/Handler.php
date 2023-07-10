@@ -50,12 +50,12 @@ class Handler extends ExceptionHandler
 
     }
 
-    public function render($request, Throwable $e)
+   public function render($request, Throwable $e)
     {
         if($e instanceof Exception){
             return response()->json([
                 'message' => $e->getMessage()
-            ]);
+             ]);
         }
 
     }

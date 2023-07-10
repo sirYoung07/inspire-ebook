@@ -44,18 +44,18 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'api' =>[
+        'admin' =>[
             'driver' => 'session',
             'provider' => 'users'
         ],
 
-        'admin' =>[
+        'rentee' =>[
             'driver' => 'session',
-            'provider' => 'admins',
+            'provider' => 'users',
         ],
         'superadmin' => [
             'driver' => 'session',
-            'provider' => 'superadmins'
+            'provider' => 'users'
         ]
     ],
 
@@ -80,24 +80,19 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
-            'table' => 'users',
-            'where' => ['role' => 0],
         ],
-
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
-            'table' => 'users',
-            'where' => ['role' => 1]
         ],
-        
+        'rentees' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\User::class,
+        ],
         'superadmins' => [
             'driver' => 'eloquent',
-            'model' => \App\Models\User::class,
-            'table' => 'users',
-            'where' => ['role' => 2]
-        ]
-
+            'model' => App\Models\User::class,
+        ],
     ],
 
     /*
@@ -126,6 +121,7 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        
     ],
 
     /*

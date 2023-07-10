@@ -2,13 +2,13 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Application;
-use Illuminate\Auth\EloquentUserProvider;
-use Illuminate\Contracts\Auth\UserProvider;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\DB;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -26,28 +26,20 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // $this->registerPolicies();
+        $this->registerPolicies();
 
         
-        // Auth::viaRequest('user', function($request){
-        //      return $request->user('sanctum');
-        //   //return Sanctum::authenticate($request);
+        // Auth::viaRequest('session', function (Request $request) {
+
+        //     // return DB::table('personal_access_tokens')
+        //     // ->join('users', 'personal_access_tokens.tokenable_id', '=', 'users.id')
+        //     // ->where('personal_access_tokens.token', $request->token)
+        //     // ->select('users.*')
+        //     // ->first();
+
         // });
-        
-        // // Auth::provider('users', function ($app, array $config) {
-        // //     return new UserProvider($app['hash'], $config['model']);
-        // // });
-        // Auth::provider('eloquent', function (Application $app, array $config) {
-        //     // Return an instance of Illuminate\Contracts\Auth\UserProvider...
- 
-        //     return new EloquentUserProvider($app->make('db')->connection(), $config['model']);
-        // });
-        
 
-
-
-
-
-       // Sanctum::ignoreMigrations();
     }
+
+    
 }

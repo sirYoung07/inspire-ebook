@@ -4,75 +4,73 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+//use Auth;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    // login
-    // not yet fixed with different guards 
     
-    public function loginuser(Request $request){
-        $user = $this->login($request, 'api');
-
-        $token = $user->createToken('auth-token')->plainTextToken;
-        return $this->success([
-            'user' => $user,
-            'token' => $token,
-        ], 'user logged in successfully', self::SUCCESS);
-        
-    }
-
-    public function loginadmin(Request $request){
-        $admin = $this->login($request, 'admin');
-
-        $token = $admin->createToken('auth-token')->plainTextToken;
-        return $this->success([
-            'user' => $admin,
-            'token' => $token,
-        ], 'admin logged in successfully', self::SUCCESS);
-
-    }
-
-    public function loginsuperadmin(Request $request){
-        $superadmin = $this->login($request, 'superadmin');
-
-        $token = $superadmin->createToken('auth-token')->plainTextToken;
-        return $this->success([
-            'user' => $superadmin,
-            'token' => $token,
-        ], 'superadmin logged in successfully', self::SUCCESS);
-
-    }
-
-
-    public function login(Request $request, string $guard){
-       $formFields = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required'
-       ]); 
-
-       if(!(Auth::guard($guard)->attempt($formFields))){
-        return $this->failure([
-            'error' => 'invalid email or password'
-        ], 'login unsuccessful', self::UNAUTHORIZED);
-
-       }
-        
-        $user = Auth::guard($guard)->user();
-        return $user;
-       
-    }
+    
     // authenticate user for practise
+
+
     public function authenticate(Request $request){
         $formFields = $request->validate([
             'email' => 'required|email',
             'password' => 'required'
            ]); 
+
+           $check = $request->only('email', 'password');
+            
+        if(Auth::guard('web')->attempt($check)){
+            $user = Auth::guard('web')->user();
+           return $this->success(['user' => $user, 'token'=> $user->createToken('rentee_token')->plainTextToken]);
+        
+        }
+        
+
+        return $this->failure([
+            'error' => 'invalid email or password'
+        ], 'login unsuccessful', self::UNAUTHORIZED);
     
-        if(Auth::attempt($formFields)){
-            $user = Auth::guard()->user();
-            return $user;
-          //  return 'yes';
+    }
+
+
+    // TO DO
+    public function loginuser(Request $request){
+        $formFields = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+           ]); 
+
+           $check = $request->only('email', 'password');
+            
+        if(Auth::guard('rentee')->attempt($check)){
+            $user = Auth::guard('rentee')->user();
+           return $this->success(['user' => $user, 'token'=> $user->createToken('rentee_token')->plainTextToken]);
+        
+        }
+        
+
+        return $this->failure([
+            'error' => 'invalid email or password'
+        ], 'login unsuccessful', self::UNAUTHORIZED);
+    
+    }
+
+
+    public function loginadmin(Request $request){
+        $formFields = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+           ]); 
+
+           $check = $request->only('email', 'password');
+            
+        if(Auth::guard('admin')->attempt($check)){
+           $user = Auth::guard('admin')->user();
+           return $this->success(['admin' => $user, 'token'=> $user->createToken('admin_token')->plainTextToken]);
+        
         }
         
 
